@@ -5,6 +5,7 @@ import time
 from apscheduler.scheduler import Scheduler
 from flask import Flask
 from flask_mysqldb import MySQL
+from decimal import Decimal
 
 app = Flask(__name__)
 
@@ -40,18 +41,19 @@ def job_function():
     small = 0
 
 
-    #while (time.time() - start) < 60:
-    #    r = requests.get(url = 'https://poloniex.com/public?command=returnTicker') 
-    #    data = r.json()['BTC_XMR']
-    #    data = {unicode(k).encode('ascii'): unicode(v).encode('ascii') for k, v in data.iteritems()}
-    #    if opened == 0:
-    #        opened = data['last']
-    #        small = data['lowestAsk']
-    #    if big < data['highestBid']:
-    #        big = data['highestBid']
-    #    if small > data['lowestAsk']:
-    #        small = data['lowestAsk']
-    #closed = data['last']
+    while (time.time() - start) < 60:
+       print('CU1')
+       r = requests.get(url = 'https://poloniex.com/public?command=returnTicker') 
+       data = r.json()['BTC_XMR']
+       print(data)
+       if opened == 0:
+           opened = Decimal(data['last'])
+           small = Decimal(data['lowestAsk'])
+       if big < Decimal(data['highestBid']):
+           big = Decimal(data['highestBid'])
+       if small > Decimal(data['lowestAsk']):
+           small = Decimal(data['lowestAsk'])
+    closed = Decimal(data['last'])
 
     print(opened, closed, big, small)
 
