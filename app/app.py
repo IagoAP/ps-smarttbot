@@ -42,10 +42,8 @@ def job_function():
 
 
     while (time.time() - start) < 60:
-       print('CU1')
        r = requests.get(url = 'https://poloniex.com/public?command=returnTicker') 
        data = r.json()['BTC_XMR']
-       print(data)
        if opened == 0:
            opened = Decimal(data['last'])
            small = Decimal(data['lowestAsk'])
