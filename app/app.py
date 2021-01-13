@@ -14,7 +14,7 @@ cron.start()
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
 app.config['MYSQL_HOST'] = '172.23.0.2'
-app.config['MYSQL_DB'] = 'smarttbot'
+app.config['MYSQL_DB'] = 'smart'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
