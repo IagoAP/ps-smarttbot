@@ -13,11 +13,14 @@ cron.start()
 
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
-app.config['MYSQL_HOST'] = '172.23.0.2'
-app.config['MYSQL_DB'] = 'smart'
+app.config['MYSQL_HOST'] = '172.33.0.101'
+app.config['MYSQL_DB'] = 'smarttbot'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
 
 @app.route('/')
 def index():
@@ -37,18 +40,18 @@ def job_function():
     small = 0
 
 
-    while (time.time() - start) < 60:
-        r = requests.get(url = 'https://poloniex.com/public?command=returnTicker') 
-        data = r.json()['BTC_XMR']
-        data = {unicode(k).encode('ascii'): unicode(v).encode('ascii') for k, v in data.iteritems()}
-        if opened == 0:
-            opened = data['last']
-            small = data['lowestAsk']
-        if big < data['highestBid']:
-            big = data['highestBid']
-        if small > data['lowestAsk']:
-            small = data['lowestAsk']
-    closed = data['last']
+    #while (time.time() - start) < 60:
+    #    r = requests.get(url = 'https://poloniex.com/public?command=returnTicker') 
+    #    data = r.json()['BTC_XMR']
+    #    data = {unicode(k).encode('ascii'): unicode(v).encode('ascii') for k, v in data.iteritems()}
+    #    if opened == 0:
+    #        opened = data['last']
+    #        small = data['lowestAsk']
+    #    if big < data['highestBid']:
+    #        big = data['highestBid']
+    #    if small > data['lowestAsk']:
+    #        small = data['lowestAsk']
+    #closed = data['last']
 
     print(opened, closed, big, small)
 
