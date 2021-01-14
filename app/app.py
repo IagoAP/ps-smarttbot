@@ -69,7 +69,6 @@ def create_candle(coin, interval):
         if coin == 'BTC_XMR':
             name = 'Bitcoin'
 
-
         while (time.time() - start) < (interval * 60):
             r = requests.get(url = 'https://poloniex.com/public?command=returnTicker') 
             data = r.json()[coin]
