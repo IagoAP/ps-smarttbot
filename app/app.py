@@ -2,6 +2,7 @@ import atexit
 import requests
 import time
 import datetime
+import traceback
 
 from apscheduler.scheduler import Scheduler
 from flask import Flask, request, jsonify
@@ -57,32 +58,36 @@ def job_function10():
     create_candle(coin, interval)  
 
 def create_candle(coin, interval):
-    now = datetime.datetime.utcnow()
-    start = time.time()
-    opened = 0
-    closed = 0
-    big = 0
-    small = 0
+    try:
+        now = datetime.datetime.utcnow()
+        start = time.time()
+        opened = 0
+        closed = 0
+        big = 0
+        small = 0
 
-    if coin == 'BTC_XMR':
-        name = 'Bitcoin'
+        if coin == 'BTC_XMR':
+            name = 'Bitcoin'
 
 
-    while (time.time() - start) < (interval * 60):
-       r = requests.get(url = 'https://poloniex.com/public?command=returnTicker') 
-       data = r.json()[coin]
-       if opened == 0:
-           opened = Decimal(data['last'])
-           small = Decimal(data['lowestAsk'])
-       if big < Decimal(data['highestBid']):
-           big = Decimal(data['highestBid'])
-       if small > Decimal(data['lowestAsk']):
-           small = Decimal(data['lowestAsk'])
-    closed = Decimal(data['last'])
+        while (time.time() - start) < (interval * 60):
+            r = requests.get(url = 'https://poloniex.com/public?command=returnTicker') 
+            data = r.json()[coin]
+            if opened == 0:
+                opened = Decimal(data['last'])
+                small = Decimal(data['lowestAsk'])
+            if big < Decimal(data['highestBid']):
+                big = Decimal(data['highestBid'])
+            if small > Decimal(data['lowestAsk']):
+                small = Decimal(data['lowestAsk'])
+        closed = Decimal(data['last'])
 
-    with app.app_context():
-        cur = mysql.connection.cursor()
-        cur.execute('''INSERT INTO candles VALUES (%s, %s, %s, %s, %s, %s, %s)''',(name, interval, now.strftime('%Y-%m-%d %H:%M:%S'), opened, small, big, closed))
-        mysql.connection.commit()
+        with app.app_context():
+            cur = mysql.connection.cursor()
+            cur.execute('''INSERT INTO candles VALUES (%s, %s, %s, %s, %s, %s, %s)''',(name, interval, now.strftime('%Y-%m-%d %H:%M:%S'), opened, small, big, closed))
+            mysql.connection.commit()
+    except Exception as err:
+        print(err)
+        traceback.print_exc()
 
 atexit.register(lambda: cron.shutdown(wait=False))
